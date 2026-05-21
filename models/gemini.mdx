@@ -1,0 +1,37 @@
+---
+title: Gemini 格式模型
+description: 调用 Google Gemini 系列模型。
+---
+
+## 推荐方式：OpenAI 兼容
+
+对多数开发者，最简单的方式仍是通过 **`/v1/chat/completions`**，将 `model` 设为 Gemini 系列 ID（以模型广场为准）：
+
+```bash
+curl https://api.FocusAPI.com/v1/chat/completions \
+  -H "Authorization: Bearer sk-your-api-key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gemini-2.0-flash",
+    "messages": [{"role": "user", "content": "Hello"}]
+  }'
+```
+
+## Gemini 原生 API（可选）
+
+部分场景需使用 Google Gemini 原生路径（如特定多模态参数）。此时需：
+
+- 使用控制台公布的 **Gemini Base URL / 路径**
+- 按 Google 文档设置 `x-goog-api-key` 或查询参数 `key`（以平台说明为准）
+
+获取模型列表时，网关可能根据请求头返回不同格式；详见平台 OpenAPI 说明（内部维护，用户文档以本页与控制台为准）。
+
+## 多模态提示
+
+- 图像、文档等输入格式因模型而异，请先确认模型广场中该模型是否支持 vision / 文件。
+- 超大 payload 可能触发超时，见 [524](/errors/524)。
+
+## 相关文档
+
+- [图像 API](/api/image)
+- [OpenAI 格式](/models/openai)

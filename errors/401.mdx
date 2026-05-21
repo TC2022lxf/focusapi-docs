@@ -1,0 +1,49 @@
+---
+title: 401 未授权
+description: API Key 无效、缺失或格式错误时的排查步骤。
+---
+
+## 现象
+
+- HTTP 状态码 **401 Unauthorized**
+- 响应中常见 `invalid_api_key`、`Incorrect API key` 或类似描述
+
+## 常见原因
+
+1. **未传** `Authorization` 头
+2. Key **写错**、复制不完整或含多余空格
+3. 使用了已 **删除 / 禁用** 的令牌
+4. 把 Key 放在了错误位置（应使用 Header，而非 query）
+
+## 处理步骤
+
+<Steps>
+  <Step title="检查请求头">
+    必须为：
+    ```http
+    Authorization: Bearer sk-your-api-key
+    ```
+    注意 `Bearer` 与 Key 之间有一个空格。
+  </Step>
+  <Step title="在控制台核对令牌">
+    登录控制台 → **令牌** → 确认该 Key 状态为可用。必要时新建 Key 再试。
+  </Step>
+  <Step title="排除环境变量覆盖">
+    确认 SDK 未读取到旧的 `OPENAI_API_KEY`，导致与预期 Key 不一致。
+  </Step>
+  <Step title="重试最小请求">
+    使用 [快速开始](/quickstart) 中的 curl 命令，仅替换 Key 与 `model`。
+  </Step>
+</Steps>
+
+## Claude / Gemini 原生路径
+
+若使用 Anthropic 或 Gemini 原生 API，可能要求 `x-api-key` 等头字段，请以对应 [模型文档](/models/claude) 为准，并确保仍使用 FocusAPI 颁发的令牌。
+
+## 仍无法解决？
+
+收集以下信息后联系支持：
+
+- 请求时间（UTC+8）
+- 使用的 `model`（可脱敏）
+- 响应 body（**勿**包含完整 Key）

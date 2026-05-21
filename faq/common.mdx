@@ -1,0 +1,46 @@
+---
+title: 常见问题
+description: FocusAPI 公有云高频问题速查。
+---
+
+## 接入与调用
+
+<AccordionGroup>
+  <Accordion title="和 OpenAI 官方 API 有什么关系？">
+    FocusAPI 提供 **OpenAI 兼容** 的 HTTP 接口。你只需把 SDK 的 `base_url` 改为 `https://api.FocusAPI.com/v1`，并使用 FocusAPI 颁发的 API Key。模型由平台聚合上架，非 OpenAI 官方账户直连。
+  </Accordion>
+  <Accordion title="Base URL 应该填什么？">
+    默认：`https://api.FocusAPI.com/v1`。若控制台提供了区域地址，以控制台为准。步骤见 [快速开始](/quickstart)。
+  </Accordion>
+  <Accordion title="模型名从哪里查？">
+    登录控制台 → **模型广场**，复制完整模型 ID 到请求体 `model` 字段。
+  </Accordion>
+  <Accordion title="是否支持流式输出？">
+    支持。在 `chat/completions` 请求中设置 `"stream": true`，详见 [对话 API](/api/chat#流式输出)。
+  </Accordion>
+</AccordionGroup>
+
+## 账户与计费
+
+<AccordionGroup>
+  <Accordion title="额度不足怎么办？">
+    在控制台 **充值** 或使用 **兑换码**。扣费规则见 [计费与价格](/billing/pricing)。
+  </Accordion>
+  <Accordion title="如何查看某次请求花了多少？">
+    在控制台 **日志** 查看历史记录；响应 JSON 中的 `usage` 字段也可参考。
+  </Accordion>
+</AccordionGroup>
+
+## 错误排查
+
+| 问题 | 文档 |
+| --- | --- |
+| Key 无效 / 401 | [401 未授权](/errors/401) |
+| 请求太频繁 | [429 限流](/errors/429) |
+| 一直转圈后失败 | [524 超时](/errors/524) |
+
+## 还不确定？
+
+1. 先完成 [快速开始](/quickstart) 中的 curl 测试  
+2. 若 curl 成功而 SDK 失败，对比 `base_url` 与 `api_key` 是否一致  
+3. 通过控制台工单或社区联系支持（链接以控制台为准）

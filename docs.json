@@ -1,0 +1,89 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "FocusAPI",
+  "theme": "mint",
+  "colors": {
+    "primary": "#2563EB",
+    "light": "#3B82F6",
+    "dark": "#1D4ED8"
+  },
+  "favicon": "/favicon.svg",
+  "navbar": {
+    "links": [
+      {
+        "label": "控制台",
+        "href": "https://focusapi.com"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "快速开始",
+      "href": "/quickstart"
+    }
+  },
+  "footer": {
+    "socials": {}
+  },
+  "seo": {
+    "indexing": "all"
+  },
+  "redirects": [
+    {
+      "source": "/getting-started",
+      "destination": "/quickstart"
+    },
+    {
+      "source": "/getting-started/",
+      "destination": "/quickstart"
+    },
+    {
+      "source": "/installation",
+      "destination": "/quickstart"
+    },
+    {
+      "source": "/installation/",
+      "destination": "/quickstart"
+    },
+    {
+      "source": "/api",
+      "destination": "/api/chat"
+    },
+    {
+      "source": "/api/",
+      "destination": "/api/chat"
+    }
+  ],
+  "navigation": {
+    "groups": [
+      {
+        "group": "开始",
+        "pages": ["index", "quickstart"]
+      },
+      {
+        "group": "模型",
+        "pages": [
+          "models/openai",
+          "models/claude",
+          "models/gemini",
+          "models/deepseek"
+        ]
+      },
+      {
+        "group": "API",
+        "pages": ["api/chat", "api/image", "api/audio"]
+      },
+      {
+        "group": "错误排查",
+        "pages": ["errors/401", "errors/429", "errors/524"]
+      },
+      {
+        "group": "计费",
+        "pages": ["billing/pricing"]
+      },
+      {
+        "group": "常见问题",
+        "pages": ["faq/common"]
+      }
+    ]
+  }
+}

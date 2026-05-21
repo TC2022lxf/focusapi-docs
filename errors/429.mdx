@@ -1,0 +1,55 @@
+---
+title: 429 限流
+description: 请求过于频繁或触发平台限流时的处理建议。
+---
+
+## 现象
+
+- HTTP 状态码 **429 Too Many Requests**
+- 可能包含 `rate_limit_exceeded` 或 Retry-After 相关信息
+
+## 常见原因
+
+1. **短时间并发过高**（脚本、压测、多进程）
+2. 账户或令牌 **RPM / TPM** 达到平台上限
+3. 上游模型供应商临时限流，经网关透传
+
+## 处理步骤
+
+<Steps>
+  <Step title="降低并发">
+    为客户端增加队列，限制同时 in-flight 请求数（例如 ≤ 3）。
+  </Step>
+  <Step title="指数退避重试">
+    收到 429 后等待 1s、2s、4s… 再重试，并设置最大重试次数（如 5 次）。
+  </Step>
+  <Step title="阅读 Retry-After">
+    若响应头含 `Retry-After`，按秒数等待后再请求。
+  </Step>
+  <Step title="检查日志">
+    在控制台 **日志** 中查看是否集中出现在某一模型或某一 Key。
+  </Step>
+</Steps>
+
+### 退避示例（Python）
+
+```python
+import time
+
+for attempt in range(5):
+    response = call_api()
+    if response.status_code != 429:
+        break
+    time.sleep(2 ** attempt)
+```
+
+## 预防建议
+
+- 生产环境使用 **固定速率** 的 worker，避免无界 goroutine
+- 流式请求同样占用连接与配额，勿无限开流
+- 需要更高配额时，通过控制台或商务渠道申请
+
+## 相关文档
+
+- [524 超时](/errors/524)
+- [对话 API](/api/chat)

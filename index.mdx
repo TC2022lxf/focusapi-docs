@@ -1,0 +1,57 @@
+---
+title: FocusAPI 文档
+description: FocusAPI 公有云 API 使用文档——快速接入、调用模型、排查错误与了解计费。
+---
+
+FocusAPI 是面向开发者的 **AI 模型 API 聚合平台**（OpenAI 兼容接口）。本文档仅说明 **公有云** 用法，不包含自建部署。
+
+## 你想做什么？
+
+<CardGroup cols={2}>
+  <Card title="第一次调用成功" icon="rocket" href="/quickstart">
+    获取 API Key、配置 Base URL，用 curl 或 OpenAI SDK 完成一次对话请求。
+  </Card>
+  <Card title="选择模型与格式" icon="brain" href="/models/openai">
+    了解 OpenAI、Claude、Gemini、DeepSeek 等调用方式与模型名规则。
+  </Card>
+  <Card title="查 API 参考" icon="code" href="/api/chat">
+    对话、图像、音频等接口的路径、请求示例与注意事项。
+  </Card>
+  <Card title="请求报错" icon="triangle-exclamation" href="/errors/401">
+    按 HTTP 状态码排查 401、429、524 等常见问题。
+  </Card>
+</CardGroup>
+
+## 推荐路径（新用户）
+
+<Steps>
+  <Step title="注册并登录控制台">
+    在 [FocusAPI 控制台](https://focusapi.com) 完成注册。
+  </Step>
+  <Step title="创建 API Key">
+    在控制台 **令牌** 页面创建密钥，格式通常为 `sk-` 开头。请妥善保存，密钥只显示一次。
+  </Step>
+  <Step title="完成第一次请求">
+    跟随 [快速开始](/quickstart) 使用 `https://api.FocusAPI.com/v1` 调用 `chat/completions`。
+  </Step>
+  <Step title="按需查阅专题">
+    流式输出、图像、音频、计费说明见对应章节。
+  </Step>
+</Steps>
+
+## 核心概念
+
+| 术语 | 说明 |
+| --- | --- |
+| **API Key（令牌）** | 调用 API 的凭证，放在请求头 `Authorization: Bearer sk-xxx` |
+| **Base URL** | 将 OpenAI SDK 的 `base_url` 指向 `https://api.FocusAPI.com/v1` |
+| **额度** | 账户可用余额，不足时可能返回与余额相关的错误 |
+| **模型名** | 请求体中的 `model` 字段，需与控制台「模型广场」中可用模型一致 |
+
+## 获取帮助
+
+- [常见问题](/faq/common)
+- [计费与价格](/billing/pricing)
+- 控制台内帮助面板 FAQ（与本文档互补）
+
+> **英文文档**：筹备中，文件位于 `en/` 目录，尚未接入导航。

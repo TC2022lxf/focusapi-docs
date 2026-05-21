@@ -1,0 +1,103 @@
+---
+title: 对话 API
+description: Chat Completions 接口路径、参数与流式输出说明。
+---
+
+## 端点
+
+```http
+POST /v1/chat/completions
+```
+
+Base URL：`https://api.FocusAPI.com/v1`
+
+## 请求头
+
+| 头 | 必填 | 说明 |
+| --- | --- | --- |
+| `Authorization` | 是 | `Bearer sk-your-api-key` |
+| `Content-Type` | 是 | `application/json` |
+
+## 请求体（常用字段）
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `model` | string | 模型 ID，见模型广场 |
+| `messages` | array | 对话消息列表，`role` 为 `system` / `user` / `assistant` |
+| `stream` | boolean | `true` 时以 SSE 流式返回 |
+| `temperature` | number | 采样温度，可选 |
+| `max_tokens` | integer | 最大生成 token 数，可选 |
+
+### 最小示例
+
+```json
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    { "role": "user", "content": "你好" }
+  ]
+}
+```
+
+完整可复制命令见 [快速开始](/quickstart)。
+
+## 流式输出
+
+设置 `"stream": true` 后，响应为 **Server-Sent Events (SSE)**，每行以 `data: ` 开头。
+
+Python SDK 示例：
+
+```python
+stream = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[{"role": "user", "content": "你好"}],
+    stream=True,
+)
+for chunk in stream:
+    if chunk.choices[0].delta.content:
+        print(chunk.choices[0].delta.content, end="")
+```
+
+<Warning>
+  流式请求请设置合理的客户端读超时；长时间无数据可能遇到 [524 超时](/errors/524)。
+</Warning>
+
+## 响应（非流式）
+
+成功时 HTTP **200**，JSON 结构兼容 OpenAI，例如：
+
+```json
+{
+  "id": "chatcmpl-xxx",
+  "object": "chat.completion",
+  "choices": [
+    {
+      "index": 0,
+      "message": { "role": "assistant", "content": "..." },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 10,
+    "completion_tokens": 20,
+    "total_tokens": 30
+  }
+}
+```
+
+`usage` 用于计费参考，具体扣费规则见 [计费说明](/billing/pricing)。
+
+## 错误
+
+| 状态码 | 文档 |
+| --- | --- |
+| 401 | [未授权](/errors/401) |
+| 429 | [限流](/errors/429) |
+| 524 | [超时](/errors/524) |
+
+## 按提供商查阅
+
+- [OpenAI 格式](/models/openai)
+- [Claude](/models/claude)
+- [Gemini](/models/gemini)
+- [DeepSeek](/models/deepseek)

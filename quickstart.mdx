@@ -1,0 +1,107 @@
+---
+title: 快速开始
+description: 5 分钟内使用 FocusAPI 完成第一次 Chat Completions 调用。
+---
+
+本页是 **最重要的入门路径**：完成后再阅读 [模型说明](/models/openai) 与 [对话 API](/api/chat)。
+
+## 前提
+
+- 已有 FocusAPI 公有云账号
+- 已在控制台创建 **API Key**（`sk-` 开头）
+
+## 1. 确认 Base URL
+
+FocusAPI 兼容 OpenAI API v1 路径，默认 Base URL 为：
+
+```text
+https://api.FocusAPI.com/v1
+```
+
+若控制台或公告提供了区域/专线地址，以控制台显示为准。
+
+## 2. 用 curl 测试（推荐）
+
+将 `sk-your-api-key` 替换为你的真实 Key：
+
+```bash
+curl https://api.FocusAPI.com/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer sk-your-api-key" \
+  -d '{
+    "model": "gpt-4o-mini",
+    "messages": [
+      {"role": "user", "content": "用一句话介绍 FocusAPI"}
+    ]
+  }'
+```
+
+### 成功时
+
+你会收到 JSON，其中包含 `choices[0].message.content` 等字段，HTTP 状态码为 **200**。
+
+### 常见失败
+
+| 现象 | 可能原因 | 处理 |
+| --- | --- | --- |
+| `401` | Key 无效或未传 | 见 [401 未授权](/errors/401) |
+| `429` | 触发限流 | 见 [429 限流](/errors/429) |
+| `model not found` | 模型名错误或账号无权限 | 在控制台「模型广场」核对可用 `model` |
+| 长时间无响应后 `524` | 上游超时 | 见 [524 超时](/errors/524) |
+
+## 3. 使用 OpenAI 官方 SDK（Python）
+
+安装 SDK 后，只需修改 `base_url` 与 `api_key`：
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://api.FocusAPI.com/v1",
+    api_key="sk-your-api-key",
+)
+
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "user", "content": "Hello from FocusAPI"},
+    ],
+)
+print(response.choices[0].message.content)
+```
+
+## 4. 使用 OpenAI 官方 SDK（Node.js）
+
+```typescript
+import OpenAI from "openai";
+
+const client = new OpenAI({
+  baseURL: "https://api.FocusAPI.com/v1",
+  apiKey: "sk-your-api-key",
+});
+
+const response = await client.chat.completions.create({
+  model: "gpt-4o-mini",
+  messages: [{ role: "user", content: "Hello from FocusAPI" }],
+});
+
+console.log(response.choices[0]?.message?.content);
+```
+
+## 5. 流式输出（可选）
+
+在请求体中设置 `"stream": true`，SDK 与 curl 需按流式方式读取 SSE。细节见 [对话 API](/api/chat#流式输出)。
+
+## 下一步
+
+<CardGroup cols={2}>
+  <Card title="对话 API" href="/api/chat">
+    参数、流式、多轮消息说明
+  </Card>
+  <Card title="OpenAI 格式模型" href="/models/openai">
+    模型命名与兼容说明
+  </Card>
+  <Card title="计费说明" href="/billing/pricing">
+    额度、倍率与充值
+  </Card>
+</CardGroup>

@@ -1,0 +1,52 @@
+---
+title: 音频 API
+description: 语音转文字（STT）与文字转语音（TTS）接口概览。
+---
+
+音频能力通常遵循 **OpenAI Audio API** 兼容路径（以模型广场上架为准）。
+
+## 语音转文字（Transcriptions）
+
+```http
+POST /v1/audio/transcriptions
+```
+
+使用 `multipart/form-data` 上传音频文件，并指定 `model`（如 `whisper-1` 或平台上架 ID）。
+
+```bash
+curl https://api.FocusAPI.com/v1/audio/transcriptions \
+  -H "Authorization: Bearer sk-your-api-key" \
+  -F file="@/path/to/audio.mp3" \
+  -F model="whisper-1"
+```
+
+## 文字转语音（Speech）
+
+```http
+POST /v1/audio/speech
+```
+
+```bash
+curl https://api.FocusAPI.com/v1/audio/speech \
+  -H "Authorization: Bearer sk-your-api-key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "tts-1",
+    "input": "你好，欢迎使用 FocusAPI",
+    "voice": "alloy"
+  }' \
+  --output speech.mp3
+```
+
+## 注意点
+
+| 项目 | 说明 |
+| --- | --- |
+| 文件大小 | 过大文件可能超时，见 [524](/errors/524) |
+| 格式 | 支持格式因模型而异（mp3、wav 等） |
+| 计费 | 可能按次数或时长计费，见 [计费说明](/billing/pricing) |
+
+## 相关文档
+
+- [快速开始](/quickstart)
+- [对话 API](/api/chat)
