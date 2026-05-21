@@ -16,6 +16,8 @@ mint dev
 
 ```text
 ├── docs.json           # Mintlify 站点配置与导航
+├── logo.png            # 导航栏 logo（暂注释于 docs.json，启用 logo 后使用）
+├── favicon.ico         # 浏览器标签图标
 ├── index.mdx
 ├── quickstart.mdx
 ├── models/

@@ -1,18 +1,23 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "name": "FocusAPI",
+  "logo": {
+    "light": "/logo.png",
+    "dark": "/logo.png",
+    "href": "https://docs.focusapi.cn"
+  },
   "theme": "mint",
   "colors": {
     "primary": "#2563EB",
     "light": "#3B82F6",
     "dark": "#1D4ED8"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/favicon.ico",
   "navbar": {
     "links": [
       {
         "label": "控制台",
-        "href": "https://focusapi.com"
+        "href": "https://focusapi.cn"
       }
     ],
     "primary": {
