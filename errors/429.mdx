@@ -1,6 +1,6 @@
 ---
-title: 429 限流
-description: 请求过于频繁或触发平台限流时的处理建议。
+title: "429 限流：并发过高与配额排查"
+description: "FocusAPI 接口返回 HTTP 429 Too Many Requests 错误的完整处理方法：降低客户端并发、读取 Retry-After 响应头、按 1s/2s/4s 指数退避重试，并了解账户 RPM/TPM 配额与上游模型供应商透传限流的预防建议。"
 ---
 
 ## 现象
