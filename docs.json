@@ -4,7 +4,7 @@
   "logo": {
     "light": "/logo.png",
     "dark": "/logo.png",
-    "href": "https://docs.focusapi.cn"
+    "href": "https://focusapi.cn"
   },
   "theme": "mint",
   "colors": {
@@ -17,7 +17,7 @@
     "links": [
       {
         "label": "控制台",
-        "href": "https://focusapi.cn"
+        "href": "https://focusapi.cn/dashboard/overview"
       }
     ],
     "primary": {
