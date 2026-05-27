@@ -1,6 +1,6 @@
 ---
-title: "FocusAPI 对话 API：Chat Completions 参考"
-description: "FocusAPI 对话 API（Chat Completions）参考文档：POST /v1/chat/completions 端点、Authorization 请求头、messages 与 stream 等请求体字段、SSE 流式输出原理及 Python SDK 示例。"
+title: "附录：Chat Completions"
+description: "FocusAPI Chat Completions 附录参考：POST /v1/chat/completions 端点、请求字段、流式输出和响应结构。"
 ---
 
 ## 端点
@@ -9,7 +9,7 @@ description: "FocusAPI 对话 API（Chat Completions）参考文档：POST /v1/c
 POST /v1/chat/completions
 ```
 
-Base URL：`https://api.FocusAPI.com/v1`
+Base URL：`https://api.focusapi.cn/v1`
 
 ## 请求头
 
@@ -39,7 +39,7 @@ Base URL：`https://api.FocusAPI.com/v1`
 }
 ```
 
-完整可复制命令见 [快速开始](/quickstart)。
+完整可复制命令见 [快速开始](/quickstart)，按能力说明见 [文本对话](/models/chat)。
 
 ## 流式输出
 
@@ -95,9 +95,9 @@ for chunk in stream:
 | 429 | [限流](/errors/429) |
 | 524 | [超时](/errors/524) |
 
-## 按提供商查阅
+## 按能力查阅
 
-- [OpenAI 格式](/models/openai)
-- [Claude](/models/claude)
-- [Gemini](/models/gemini)
-- [DeepSeek](/models/deepseek)
+- [文本对话](/models/chat)
+- [推理模型](/models/reasoning)
+- [多模态理解](/models/multimodal)
+- [工具调用](/models/tool-calling)

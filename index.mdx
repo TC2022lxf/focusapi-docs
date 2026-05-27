@@ -1,24 +1,30 @@
 ---
-title: "FocusAPI 公有云 API 使用文档"
-description: "FocusAPI 公有云 API 使用文档的总览与导航首页：包含 5 分钟快速开始入门指南、OpenAI/Claude/Gemini/DeepSeek 等不同格式模型的调用方式、对话与图像音频等接口参考、401/429/524 错误排查指南与计费价格完整说明。"
+title: "FocusAPI 文档"
+description: "FocusAPI 公有云文档首页：从快速开始进入，再按文本对话、推理、图像生成、视频生成、语音、Embedding/Rerank 等模型能力查找接入方式。"
 ---
 
-FocusAPI 是面向开发者的 **AI 模型 API 聚合平台**（OpenAI 兼容接口）。本文档仅说明 **公有云** 用法，不包含自建部署。
+FocusAPI 是面向开发者的 **AI 模型 API 聚合平台**。本文档以“模型能力”为主线：先选择你要完成的任务，再查看可用模型、调用方式和特殊参数。
+
+多数文本模型兼容 OpenAI SDK；通常只需要把 Base URL 改为：
+
+```text
+https://api.focusapi.cn/v1
+```
 
 ## 你想做什么？
 
 <CardGroup cols={2}>
   <Card title="第一次调用成功" icon="rocket" href="/quickstart">
-    获取 API Key、配置 Base URL，用 curl 或 OpenAI SDK 完成一次对话请求。
+    获取 API Key、配置 Base URL，用 curl 或 SDK 完成首次对话请求。
   </Card>
-  <Card title="选择模型与格式" icon="brain" href="/models/openai">
-    了解 OpenAI、Claude、Gemini、DeepSeek 等调用方式与模型名规则。
+  <Card title="选择模型能力" icon="brain" href="/models/selection">
+    按文本、推理、图像、视频、语音、Embedding 等能力选择模型。
   </Card>
-  <Card title="查 API 参考" icon="code" href="/api/chat">
-    对话、图像、音频等接口的路径、请求示例与注意事项。
+  <Card title="接入图像生成" icon="image" href="/models/image-generation">
+    查看 OpenAI、Gemini、Seedream 等图片模型的接入方式。
   </Card>
   <Card title="请求报错" icon="triangle-exclamation" href="/errors/401">
-    按 HTTP 状态码排查 401、429、524 等常见问题。
+    按现象排查 401、429、524、模型不可用、超时等问题。
   </Card>
 </CardGroup>
 
@@ -26,32 +32,50 @@ FocusAPI 是面向开发者的 **AI 模型 API 聚合平台**（OpenAI 兼容接
 
 <Steps>
   <Step title="注册并登录控制台">
-    在 [FocusAPI 控制台](https://focusapi.com) 完成注册。
+    在 [FocusAPI 控制台](https://focusapi.cn) 完成注册。
   </Step>
   <Step title="创建 API Key">
     在控制台 **令牌** 页面创建密钥，格式通常为 `sk-` 开头。请妥善保存，密钥只显示一次。
   </Step>
   <Step title="完成第一次请求">
-    跟随 [快速开始](/quickstart) 使用 `https://api.FocusAPI.com/v1` 调用 `chat/completions`。
+    跟随 [快速开始](/quickstart) 使用 `https://api.focusapi.cn/v1` 调用文本对话模型。
   </Step>
-  <Step title="按需查阅专题">
-    流式输出、图像、音频、计费说明见对应章节。
+  <Step title="按能力继续接入">
+    文本、图像、视频、语音、Embedding 等能力见 [模型选择指南](/models/selection)。
   </Step>
 </Steps>
 
-## 核心概念
+## 文档怎么查
 
-| 术语 | 说明 |
-| --- | --- |
-| **API Key（令牌）** | 调用 API 的凭证，放在请求头 `Authorization: Bearer sk-xxx` |
-| **Base URL** | 将 OpenAI SDK 的 `base_url` 指向 `https://api.FocusAPI.com/v1` |
-| **额度** | 账户可用余额，不足时可能返回与余额相关的错误 |
-| **模型名** | 请求体中的 `model` 字段，需与控制台「模型广场」中可用模型一致 |
+<CardGroup cols={2}>
+  <Card title="文本对话" href="/models/chat">
+    GPT、Claude、Gemini、DeepSeek 等对话模型，含 curl 与 OpenAI SDK 调用方式。
+  </Card>
+  <Card title="图片分析" href="/models/image-analysis">
+    让模型读取图片、截图、票据和图表，并根据图片回答问题。
+  </Card>
+  <Card title="推理模型" href="/models/reasoning">
+    适合复杂推理、代码分析、数学和规划任务的模型。
+  </Card>
+  <Card title="图像生成" href="/models/image-generation">
+    文生图、返回 URL/base64、多轮图像创作等说明。
+  </Card>
+  <Card title="图像编辑" href="/models/image-editing">
+    上传原图，用文本指令改图、换背景、局部重绘。
+  </Card>
+  <Card title="视频生成" href="/models/video-generation">
+    Seedance 等视频模型的任务提交、轮询和结果获取流程。
+  </Card>
+  <Card title="语音模型" href="/models/audio">
+    语音转文字、文字转语音和常见音频格式说明。
+  </Card>
+  <Card title="Embedding / Rerank" href="/models/embedding-rerank">
+    向量化、重排、检索增强应用的接入说明。
+  </Card>
+</CardGroup>
 
 ## 获取帮助
 
-- [常见问题](/faq/common)
-- [计费与价格](/billing/pricing)
-- 控制台内帮助面板 FAQ（与本文档互补）
-
-> **英文文档**：筹备中，文件位于 `en/` 目录，尚未接入导航。
+- 调用失败先看 [错误排查](/errors/overview)
+- 额度、扣费、用量日志见 [计费与用量](/billing/pricing)
+- 高频问题见 [常见问题](/faq/common)

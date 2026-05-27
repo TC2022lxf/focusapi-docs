@@ -51,11 +51,19 @@
     },
     {
       "source": "/api",
-      "destination": "/api/chat"
+      "destination": "/models/selection"
     },
     {
       "source": "/api/",
-      "destination": "/api/chat"
+      "destination": "/models/selection"
+    },
+    {
+      "source": "/models",
+      "destination": "/models/selection"
+    },
+    {
+      "source": "/models/",
+      "destination": "/models/selection"
     }
   ],
   "navigation": {
@@ -65,25 +73,28 @@
         "pages": ["index", "quickstart"]
       },
       {
-        "group": "模型",
+        "group": "模型能力",
         "pages": [
-          "models/openai",
-          "models/claude",
-          "models/gemini",
-          "models/deepseek"
+          "models/selection",
+          "models/chat",
+          "models/image-analysis",
+          "models/reasoning",
+          "models/image-generation",
+          "models/image-editing",
+          "models/video-generation",
+          "models/audio",
+          "models/embedding-rerank",
+          "models/multimodal",
+          "models/tool-calling"
         ]
       },
       {
-        "group": "API",
-        "pages": ["api/chat", "api/image", "api/audio"]
+        "group": "计费与用量",
+        "pages": ["billing/pricing"]
       },
       {
         "group": "错误排查",
-        "pages": ["errors/401", "errors/429", "errors/524"]
-      },
-      {
-        "group": "计费",
-        "pages": ["billing/pricing"]
+        "pages": ["errors/overview", "errors/401", "errors/429", "errors/524"]
       },
       {
         "group": "常见问题",

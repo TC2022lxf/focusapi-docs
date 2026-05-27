@@ -1,9 +1,9 @@
 ---
-title: "FocusAPI 图像 API：图片生成与编辑接口"
-description: "FocusAPI 图像 API 参考：通过 OpenAI 兼容的 POST /v1/images/generations 路径生成与编辑图片，含 model、prompt、size、quality 等参数说明、异步任务轮询机制以及 429 限流与 524 超时处理建议。"
+title: "附录：Images API"
+description: "FocusAPI Images API 附录参考：POST /v1/images/generations 路径、常见字段、返回结果、异步任务和错误处理。"
 ---
 
-FocusAPI 支持多种图像能力，具体可用模型与路径以 **模型广场** 为准。常见形态包括 OpenAI 兼容的 Images API 及部分厂商原生路径。
+FocusAPI 支持多种图像能力，具体可用模型与路径以 **模型广场** 为准。新用户请优先阅读 [图像生成](/models/image-generation)，本页作为接口附录。
 
 ## OpenAI 兼容图像生成（常见）
 
@@ -14,7 +14,7 @@ POST /v1/images/generations
 ### 示例
 
 ```bash
-curl https://api.FocusAPI.com/v1/images/generations \
+curl https://api.focusapi.cn/v1/images/generations \
   -H "Authorization: Bearer sk-your-api-key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -43,5 +43,6 @@ curl https://api.FocusAPI.com/v1/images/generations \
 
 ## 相关文档
 
-- [Gemini 多模态](/models/gemini)
-- [对话 API](/api/chat)
+- [图像生成](/models/image-generation)
+- [多模态理解](/models/multimodal)
+- [视频生成](/models/video-generation)

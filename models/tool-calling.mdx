@@ -1,0 +1,81 @@
+---
+title: "工具调用 / Function Calling"
+description: "FocusAPI 工具调用与 Function Calling 接入指南：说明 tools、tool_choice、函数参数、模型兼容性和常见调试方法。"
+---
+
+工具调用让模型在回答前选择调用你定义的函数，常用于 Agent、数据库查询、订单操作、联网搜索和业务工作流。
+
+## 适合场景
+
+- 根据用户问题调用后端函数
+- 查询订单、库存、日程或知识库
+- 多步骤 Agent 工作流
+- 让模型输出结构化参数，而不是自由文本
+
+## 调用接口
+
+多数支持工具调用的模型使用 [文本对话模型](/models/chat) 的同一接口：
+
+```http
+POST /v1/chat/completions
+```
+
+关键字段是 `tools` 和 `tool_choice`。模型是否支持这些字段，以模型广场能力标签为准。
+
+## 示例结构
+
+```json
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    { "role": "user", "content": "查询订单 A123 的物流状态" }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "get_order_status",
+        "description": "查询订单物流状态",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "order_id": {
+              "type": "string",
+              "description": "订单号"
+            }
+          },
+          "required": ["order_id"]
+        }
+      }
+    }
+  ]
+}
+```
+
+## 模型差异
+
+| 来源 | 说明 |
+| --- | --- |
+| OpenAI / GPT | 通常对 `tools` / function calling 支持较完整 |
+| Claude | 工具调用语义相近，但原生格式可能不同 |
+| Gemini | 支持函数调用，但原生 SDK 参数可能不同 |
+| 其他模型 | 可能只支持 JSON 输出，不支持自动工具选择 |
+
+## 调试建议
+
+- 先让模型只输出 JSON，确认结构化能力，再接入真实工具。
+- 函数参数 schema 保持简短明确，避免嵌套过深。
+- 如果模型没有调用工具，尝试使用 `tool_choice` 强制指定。
+- 如果返回参数不符合预期，缩小 enum、增加 description、减少可选字段。
+- 生产环境必须在服务端校验工具参数，不能直接信任模型输出。
+
+## 相关文档
+
+<CardGroup cols={2}>
+  <Card title="文本对话" href="/models/chat">
+    工具调用基于对话消息和模型响应。
+  </Card>
+  <Card title="错误排查" href="/errors/overview">
+    处理参数不兼容、模型不可用、限流和超时。
+  </Card>
+</CardGroup>

@@ -1,0 +1,53 @@
+---
+title: "模型选择指南"
+description: "按任务选择 FocusAPI 模型能力：文本对话、图片分析、推理、图像生成、图像编辑、视频生成、语音、Embedding/Rerank、多模态理解与工具调用。"
+---
+
+不要先从厂商开始选。先确认你要完成的能力，再在控制台 **模型广场** 复制对应的完整 `model` ID。
+
+<Tip>
+  如果你只是想快速验证接入，先完成 [快速开始](/quickstart)，再回到本页选择具体能力。
+</Tip>
+
+## 按任务选择
+
+| 任务 | 入口 | 典型模型来源 | 常用调用方式 |
+| --- | --- | --- | --- |
+| 聊天、问答、总结、翻译 | [文本对话](/models/chat) | OpenAI、Claude、Gemini、DeepSeek 等 | curl、OpenAI SDK、部分原生 SDK |
+| 图片问答、截图分析、票据识别 | [图片分析](/models/image-analysis) | GPT、Claude、Gemini 等 | Chat Completions 图文输入 |
+| 复杂推理、数学、代码分析 | [推理模型](/models/reasoning) | DeepSeek、OpenAI、Claude 等 | curl、OpenAI SDK |
+| 文生图 | [图像生成](/models/image-generation) | OpenAI、Gemini、Seedream 等 | Images API、GenAI SDK、厂商特殊参数 |
+| 改图、局部修改、参考图重绘 | [图像编辑](/models/image-editing) | GPT 图像、Gemini、兼容图像模型 | Images Edit、GenAI 多模态输入 |
+| 文生视频、图生视频 | [视频生成](/models/video-generation) | Seedance、可灵等 | 异步任务提交与轮询 |
+| 语音转文字、文字转语音 | [语音模型](/models/audio) | Whisper、TTS、其他语音模型 | multipart 上传、音频输出 |
+| 向量化、召回、重排 | [Embedding / Rerank](/models/embedding-rerank) | OpenAI、BGE、Jina 等 | Embeddings/Rerank 接口 |
+| 文件理解、混合多模态输入 | [多模态理解](/models/multimodal) | GPT、Claude、Gemini 等 | Chat Completions 或原生多模态格式 |
+| 函数调用、工具调用 | [工具调用](/models/tool-calling) | GPT、Claude、Gemini 等 | tools/function calling 参数 |
+
+## 选择时看什么
+
+- **模型 ID**：以模型广场展示为准，复制完整 ID，不要自行拼接。
+- **能力标签**：确认是否支持流式、视觉、工具调用、图片、视频、音频等。
+- **调用方式**：优先使用你现有代码最容易迁移的 SDK；没有 SDK 时使用 curl/HTTP。
+- **特殊参数**：图像、视频、推理和原生厂商 SDK 通常有额外参数，见对应能力页。
+- **价格与限额**：上线前查看 [计费与用量](/billing/pricing)，并做好 [429 限流](/errors/429) 处理。
+
+## 常见路径
+
+<CardGroup cols={2}>
+  <Card title="我已有 OpenAI SDK" href="/models/chat">
+    多数文本模型只需要修改 Base URL、API Key 和 model。
+  </Card>
+  <Card title="我要生成图片" href="/models/image-generation">
+    查看 OpenAI Images、Gemini 图像、Seedream 等模型差异。
+  </Card>
+  <Card title="我要编辑图片" href="/models/image-editing">
+    上传原图并用文本指令改图、换背景、局部重绘。
+  </Card>
+  <Card title="我要生成视频" href="/models/video-generation">
+    了解异步任务、task_id、轮询和超时处理。
+  </Card>
+  <Card title="调用失败" href="/errors/overview">
+    按现象排查 Key、模型名、限流、超时和余额问题。
+  </Card>
+</CardGroup>

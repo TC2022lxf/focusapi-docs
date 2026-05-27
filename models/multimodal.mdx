@@ -1,0 +1,62 @@
+---
+title: "多模态理解"
+description: "FocusAPI 多模态理解接入指南：文档、文件、图文混合输入等能力，说明 GPT、Claude、Gemini 等模型的输入差异和注意事项。"
+---
+
+多模态理解用于让模型读取文档、文件、图片和文本混合内容。只分析单张图片、截图、票据或图表时，优先看 [图片分析](/models/image-analysis)。
+
+## 适合场景
+
+- 文档摘要和多页材料分析
+- 图文混合客服或知识库
+- 多文件、多图片和文本混合输入
+- 视频帧、PDF 或厂商原生文件输入
+
+## 调用方式
+
+很多多模态模型仍可通过 [文本对话模型](/models/chat) 的 Chat Completions 调用，但 `messages.content` 可能需要传数组，包含文本、图片或文件。
+
+示例形态：
+
+```json
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        { "type": "text", "text": "请描述这张图片" },
+        {
+          "type": "image_url",
+          "image_url": {
+            "url": "https://example.com/image.png"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+## 模型来源差异
+
+| 来源 | 说明 |
+| --- | --- |
+| GPT 多模态 | 通常兼容 OpenAI 风格图文输入 |
+| Claude 多模态 | 可能支持 Anthropic Messages 格式，也可通过平台兼容格式调用 |
+| Gemini 多模态 | 对图片、视频帧、文件输入支持较强，特殊参数以模型广场为准 |
+
+<Warning>
+  多模态输入格式比纯文本更容易因模型差异而失败。先用一张小图和最小文本请求跑通，再增加文件、长上下文和特殊参数。
+</Warning>
+
+## 输入建议
+
+- 单张图片问答优先看 [图片分析](/models/image-analysis)。
+- 优先使用可访问的 HTTPS URL。
+- base64 会显著增加请求体大小，超大输入可能触发 [524 超时](/errors/524)。
+- 需要生成图片时，请看 [图像生成](/models/image-generation)，不要使用本页能力。
+
+## 成本与限制
+
+多模态模型通常会按图片、token 或模型倍率计费。具体扣费以控制台日志和 [计费与用量](/billing/pricing) 为准。

@@ -1,37 +1,23 @@
 ---
-title: "Gemini 模型调用：OpenAI 兼容与原生路径"
-description: "在 FocusAPI 调用 Google Gemini 系列模型的两种推荐方式：使用 OpenAI 兼容的 /v1/chat/completions 路径，或 Gemini 原生路径配合 x-goog-api-key 认证，含图像与文档等多模态输入的注意事项。"
+title: "Gemini 模型说明"
+description: "FocusAPI Gemini 模型说明：本页为旧入口，Gemini 文本、多模态、图像等能力已拆分到对应模型能力页面。"
 ---
 
-## 推荐方式：OpenAI 兼容
+Gemini 相关模型可能用于文本对话、多模态理解、图像生成和推理。请按你要完成的能力进入对应页面。
 
-对多数开发者，最简单的方式仍是通过 **`/v1/chat/completions`**，将 `model` 设为 Gemini 系列 ID（以模型广场为准）：
+<CardGroup cols={2}>
+  <Card title="文本对话" href="/models/chat">
+    使用 OpenAI 兼容方式调用 Gemini 文本模型。
+  </Card>
+  <Card title="多模态理解" href="/models/multimodal">
+    图片、文档、截图等多模态输入说明。
+  </Card>
+  <Card title="图像生成" href="/models/image-generation">
+    Gemini / Imagen 等图像模型接入方式。
+  </Card>
+  <Card title="推理模型" href="/models/reasoning">
+    Gemini 推理模型和长任务建议。
+  </Card>
+</CardGroup>
 
-```bash
-curl https://api.FocusAPI.com/v1/chat/completions \
-  -H "Authorization: Bearer sk-your-api-key" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "gemini-2.0-flash",
-    "messages": [{"role": "user", "content": "Hello"}]
-  }'
-```
-
-## Gemini 原生 API（可选）
-
-部分场景需使用 Google Gemini 原生路径（如特定多模态参数）。此时需：
-
-- 使用控制台公布的 **Gemini Base URL / 路径**
-- 按 Google 文档设置 `x-goog-api-key` 或查询参数 `key`（以平台说明为准）
-
-获取模型列表时，网关可能根据请求头返回不同格式；详见平台 OpenAPI 说明（内部维护，用户文档以本页与控制台为准）。
-
-## 多模态提示
-
-- 图像、文档等输入格式因模型而异，请先确认模型广场中该模型是否支持 vision / 文件。
-- 超大 payload 可能触发超时，见 [524](/errors/524)。
-
-## 相关文档
-
-- [图像 API](/api/image)
-- [OpenAI 格式](/models/openai)
+如果你必须使用 Gemini 原生 SDK，请以控制台公布的路径和模型广场参数为准；原生格式通常只在特殊多模态或图像参数场景需要。

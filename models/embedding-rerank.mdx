@@ -1,0 +1,73 @@
+---
+title: "Embedding / Rerank"
+description: "FocusAPI Embedding 与 Rerank 接入指南：向量化、语义检索、RAG 召回、重排模型选择、批量请求与成本控制。"
+---
+
+Embedding 和 Rerank 常用于知识库、语义搜索、推荐、去重和 RAG。
+
+- **Embedding**：把文本转换为向量，用于召回相似内容。
+- **Rerank**：对候选结果重新排序，提高最终命中质量。
+
+## Embedding
+
+常见路径：
+
+```http
+POST /v1/embeddings
+```
+
+```bash
+curl https://api.focusapi.cn/v1/embeddings \
+  -H "Authorization: Bearer sk-your-api-key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "text-embedding-3-small",
+    "input": "FocusAPI 是 AI 模型 API 聚合平台"
+  }'
+```
+
+## Rerank
+
+Rerank 的路径和参数可能因模型来源不同而不同。常见输入包括：
+
+- `query`：用户问题
+- `documents`：候选文本列表
+- `model`：重排模型 ID
+- `top_n`：返回前 N 条
+
+如果模型广场标记了 Rerank 能力，请优先查看该模型的参数说明。
+
+## 选择建议
+
+| 场景 | 建议 |
+| --- | --- |
+| 低成本大规模召回 | 使用轻量 Embedding 模型 |
+| 中文知识库 | 选择中文效果较好的向量模型 |
+| 高准确率问答 | Embedding 召回后叠加 Rerank |
+| 实时搜索 | 控制批量大小和并发 |
+
+## 批量与成本
+
+- 批量向量化时注意单次输入上限。
+- 文档切分不宜过长，否则召回粒度变粗且成本上升。
+- 大批量任务建议加队列和重试，避免 [429 限流](/errors/429)。
+- 具体扣费看 [计费与用量](/billing/pricing)。
+
+## 与文本对话配合
+
+RAG 常见流程：
+
+<Steps>
+  <Step title="离线向量化">
+    将知识库切块后调用 Embedding，存入向量数据库。
+  </Step>
+  <Step title="在线召回">
+    用户提问后向量化 query，检索相关文档。
+  </Step>
+  <Step title="可选重排">
+    使用 Rerank 对候选文档重新排序。
+  </Step>
+  <Step title="生成答案">
+    将高相关文档放入 [文本对话模型](/models/chat) 的上下文。
+  </Step>
+</Steps>

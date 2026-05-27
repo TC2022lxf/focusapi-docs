@@ -1,9 +1,9 @@
 ---
-title: "FocusAPI 音频 API：语音转文字与文字转语音"
-description: "FocusAPI 音频接口完整指南：通过 OpenAI 兼容路径调用 Whisper 等语音转文字（STT，Transcriptions）与 TTS 文字转语音（Speech）模型，含 curl 上传示例、支持的音频格式、文件大小限制、请求超时与按次或按时长计费等关键注意点。"
+title: "附录：Audio API"
+description: "FocusAPI Audio API 附录参考：语音转文字、文字转语音、multipart 上传、音频输出和常见限制。"
 ---
 
-音频能力通常遵循 **OpenAI Audio API** 兼容路径（以模型广场上架为准）。
+音频能力通常遵循 **OpenAI Audio API** 兼容路径（以模型广场上架为准）。新用户请优先阅读 [语音模型](/models/audio)，本页作为接口附录。
 
 ## 语音转文字（Transcriptions）
 
@@ -14,7 +14,7 @@ POST /v1/audio/transcriptions
 使用 `multipart/form-data` 上传音频文件，并指定 `model`（如 `whisper-1` 或平台上架 ID）。
 
 ```bash
-curl https://api.FocusAPI.com/v1/audio/transcriptions \
+curl https://api.focusapi.cn/v1/audio/transcriptions \
   -H "Authorization: Bearer sk-your-api-key" \
   -F file="@/path/to/audio.mp3" \
   -F model="whisper-1"
@@ -27,7 +27,7 @@ POST /v1/audio/speech
 ```
 
 ```bash
-curl https://api.FocusAPI.com/v1/audio/speech \
+curl https://api.focusapi.cn/v1/audio/speech \
   -H "Authorization: Bearer sk-your-api-key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -49,4 +49,4 @@ curl https://api.FocusAPI.com/v1/audio/speech \
 ## 相关文档
 
 - [快速开始](/quickstart)
-- [对话 API](/api/chat)
+- [语音模型](/models/audio)

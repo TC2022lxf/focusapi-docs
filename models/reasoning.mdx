@@ -1,0 +1,65 @@
+---
+title: "推理模型"
+description: "FocusAPI 推理模型接入说明：适合复杂推理、数学、代码分析和规划任务，包含 DeepSeek Reasoner、GPT 推理模型等的调用建议。"
+---
+
+推理模型适合需要多步思考的任务，例如数学题、复杂代码分析、规划、审查和长链路决策。它们通常比普通对话模型更慢，也可能消耗更多输出 token。
+
+## 适合场景
+
+- 代码审查、Bug 定位、架构权衡
+- 数学、逻辑、表格推断
+- 复杂指令拆解和计划生成
+- 长文档中的多跳问答
+
+如果只是普通聊天、翻译或简单总结，优先使用 [文本对话模型](/models/chat) 中的 mini / flash / chat 模型。
+
+## 常见模型来源
+
+| 来源 | 常见用途 | 说明 |
+| --- | --- | --- |
+| DeepSeek Reasoner | 中文推理、代码推理、复杂问答 | 常见模型 ID 如 `deepseek-reasoner`，以模型广场为准 |
+| OpenAI 推理模型 | 高难度推理、代码、Agent 任务 | 可能支持特殊 reasoning 参数，按模型广场说明使用 |
+| Claude 推理模型 | 长上下文推理、写作和规划 | 可通过 OpenAI 兼容方式调用，特殊参数以平台支持为准 |
+| Gemini 推理模型 | 快速推理、多模态推理 | 特殊多模态输入见 [多模态理解](/models/multimodal) |
+
+## 调用方式
+
+多数推理模型仍使用：
+
+```http
+POST /v1/chat/completions
+```
+
+你只需要把 [快速开始](/quickstart) 中的 `model` 换成模型广场里的推理模型 ID：
+
+```bash
+curl https://api.focusapi.cn/v1/chat/completions \
+  -H "Authorization: Bearer sk-your-api-key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "deepseek-reasoner",
+    "messages": [
+      {"role": "user", "content": "请逐步分析这个问题：..."}
+    ]
+  }'
+```
+
+## 参数建议
+
+| 参数 | 建议 |
+| --- | --- |
+| `max_tokens` | 给推理模型预留足够输出空间，但不要无限放大 |
+| `temperature` | 需要稳定答案时调低；创意任务可适当提高 |
+| `stream` | 长推理建议开启，减少等待感 |
+| reasoning 相关参数 | 只有模型广场明确支持时再传，失败时先移除特殊参数 |
+
+<Note>
+  不同供应商对“思考过程”“reasoning token”“thinking”字段的支持方式不同。文档内不重复每个厂商的全部参数，优先以模型广场和对应能力说明为准。
+</Note>
+
+## 常见问题
+
+- 响应慢：推理模型本身更耗时，建议开启流式，或参考 [524 超时](/errors/524)。
+- 成本高：推理过程可能产生更多 token，见 [计费与用量](/billing/pricing)。
+- 特殊参数报错：先用最小请求跑通，再逐个增加模型支持的参数。

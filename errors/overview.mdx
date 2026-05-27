@@ -1,0 +1,59 @@
+---
+title: "错误排查总览"
+description: "FocusAPI 常见错误排查总览：按现象定位 API Key、模型名、余额、限流、超时、图片视频任务失败等问题。"
+---
+
+调用失败时，先按现象定位，不必一开始就研究完整响应结构。
+
+## 最常见问题
+
+| 现象 | 常见原因 | 处理 |
+| --- | --- | --- |
+| `401 Unauthorized` | Key 缺失、错误、禁用 | 看 [401 未授权](/errors/401) |
+| `429 Too Many Requests` | 并发过高、RPM/TPM 超限、上游限流 | 看 [429 限流](/errors/429) |
+| `524` 或长时间无响应 | 单次请求过久、重任务同步等待 | 看 [524 超时](/errors/524) |
+| `model not found` | 模型名错误或账号不可用 | 到模型广场复制完整 `model` ID |
+| 余额不足 | 账户额度不足 | 看 [计费与用量](/billing/pricing) |
+| SDK 连接官方地址 | Base URL 没改 | 确认使用 `https://api.focusapi.cn/v1` |
+
+## 最小化排查
+
+<Steps>
+  <Step title="回到最小请求">
+    使用 [快速开始](/quickstart) 的 curl 示例，只替换 API Key 和 `model`。
+  </Step>
+  <Step title="核对模型">
+    在控制台模型广场复制完整模型 ID，不要手写后缀。
+  </Step>
+  <Step title="查看控制台日志">
+    检查是否有扣费、上游错误、限流或任务失败记录。
+  </Step>
+  <Step title="再恢复业务参数">
+    最小请求成功后，再逐个恢复 `stream`、图片、工具调用、特殊参数等。
+  </Step>
+</Steps>
+
+## 按能力排查
+
+<CardGroup cols={2}>
+  <Card title="文本对话失败" href="/models/chat">
+    检查 messages、model、stream、max_tokens。
+  </Card>
+  <Card title="图像生成失败" href="/models/image-generation">
+    检查 size、response_format、特殊参数和内容安全。
+  </Card>
+  <Card title="视频任务失败" href="/models/video-generation">
+    检查 task_id、轮询间隔、时长和素材 URL。
+  </Card>
+  <Card title="语音上传失败" href="/models/audio">
+    检查 multipart、文件大小、格式和超时。
+  </Card>
+</CardGroup>
+
+## 联系支持时提供
+
+- 请求时间（UTC+8）
+- 使用的模型 ID
+- HTTP 状态码和响应 body
+- 控制台日志截图或请求 ID（如有）
+- 不要提供完整 API Key

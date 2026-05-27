@@ -1,0 +1,66 @@
+---
+title: "语音模型"
+description: "FocusAPI 语音模型接入指南：语音转文字 STT、文字转语音 TTS、音频上传、OpenAI Audio 兼容路径、文件大小、格式和超时说明。"
+---
+
+语音能力主要分为两类：**语音转文字（STT）** 和 **文字转语音（TTS）**。常见模型可以使用 OpenAI Audio 兼容路径，也可能有厂商原生参数。
+
+## 语音转文字
+
+适合会议转写、字幕、客服录音分析、语音输入。
+
+常见路径：
+
+```http
+POST /v1/audio/transcriptions
+```
+
+```bash
+curl https://api.focusapi.cn/v1/audio/transcriptions \
+  -H "Authorization: Bearer sk-your-api-key" \
+  -F file="@/path/to/audio.mp3" \
+  -F model="whisper-1"
+```
+
+## 文字转语音
+
+适合配音、有声内容、语音播报。
+
+常见路径：
+
+```http
+POST /v1/audio/speech
+```
+
+```bash
+curl https://api.focusapi.cn/v1/audio/speech \
+  -H "Authorization: Bearer sk-your-api-key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "tts-1",
+    "input": "你好，欢迎使用 FocusAPI",
+    "voice": "alloy"
+  }' \
+  --output speech.mp3
+```
+
+## 常见参数
+
+| 能力 | 参数 | 说明 |
+| --- | --- | --- |
+| STT | `file` | 上传音频文件，通常使用 `multipart/form-data` |
+| STT | `model` | 语音识别模型 ID |
+| STT | `language` | 可选，指定音频语言 |
+| TTS | `input` | 要朗读的文本 |
+| TTS | `voice` | 音色，取决于模型支持 |
+| TTS | `response_format` | 输出格式，如 mp3、wav 等 |
+
+## 文件与超时
+
+- 大文件更容易触发 [524 超时](/errors/524)，建议切分后上传。
+- 音频格式、大小限制和时长限制以模型广场说明为准。
+- 批量转写建议控制并发，避免 [429 限流](/errors/429)。
+
+## 计费
+
+语音模型可能按次数、字符数、音频时长或模型倍率计费。具体以控制台日志和 [计费与用量](/billing/pricing) 为准。

@@ -1,51 +1,25 @@
 ---
-title: "Claude 模型调用：Anthropic Messages 与 OpenAI 兼容"
-description: "在 FocusAPI 调用 Anthropic Claude 模型的两种集成方式：OpenAI 兼容的 chat/completions 路径（最快上手）与 Anthropic Messages 原生 /v1/messages 路径，含 x-api-key 请求头与 SDK 示例。"
+title: "Claude 模型说明"
+description: "FocusAPI Claude 模型说明：本页为旧入口，Claude 文本、推理、多模态和工具调用已拆分到对应模型能力页面。"
 ---
 
-## 调用方式
+Claude 不是单独的一种文档入口，而是出现在不同能力中：文本对话、推理、多模态理解和工具调用。
 
-FocusAPI 支持 **Anthropic Messages** 原生路径，也支持通过 **OpenAI 兼容** 的 `chat/completions` 调用部分 Claude 模型（以模型广场为准）。
+## 去哪里看
 
-### 方式 A：OpenAI 兼容（上手最快）
+<CardGroup cols={2}>
+  <Card title="文本对话" href="/models/chat">
+    通过 OpenAI 兼容方式调用 Claude 对话模型。
+  </Card>
+  <Card title="推理模型" href="/models/reasoning">
+    查看适合复杂推理和长上下文任务的模型。
+  </Card>
+  <Card title="多模态理解" href="/models/multimodal">
+    图片、截图和文档理解输入格式说明。
+  </Card>
+  <Card title="工具调用" href="/models/tool-calling">
+    查看工具调用、函数参数和兼容性说明。
+  </Card>
+</CardGroup>
 
-与 [OpenAI 格式](/models/openai) 相同，仅修改 `model` 为 Claude 系列 ID，例如：
-
-```bash
-curl https://api.FocusAPI.com/v1/chat/completions \
-  -H "Authorization: Bearer sk-your-api-key" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "claude-sonnet-4-20250514",
-    "messages": [{"role": "user", "content": "Hello"}]
-  }'
-```
-
-### 方式 B：Anthropic Messages API
-
-使用 Anthropic SDK 或 HTTP 时，将 Base URL 指向 FocusAPI 提供的 Claude 路径前缀（以控制台文档或公告为准）。常见路径形态为 `/v1/messages`（Anthropic 格式）。
-
-请求头通常需要：
-
-```http
-x-api-key: sk-your-api-key
-anthropic-version: 2023-06-01
-```
-
-<Note>
-  若你已在用 OpenAI SDK，优先使用方式 A，减少集成成本。
-</Note>
-
-## 模型选择
-
-在控制台 **模型广场** 筛选 Claude 系列，使用列表中的 **完整模型 ID**。
-
-## 常见问题
-
-- **401**：检查 `Authorization` 或 `x-api-key` 是否与令牌类型匹配，见 [401](/errors/401)。
-- **扩展思考 / 工具**：高级参数是否支持取决于平台上架配置，失败时先简化请求体再试。
-
-## 相关文档
-
-- [对话 API](/api/chat)
-- [快速开始](/quickstart)
+如果你必须使用 Anthropic 原生 SDK，请以控制台和模型广场说明为准；优先先用 [快速开始](/quickstart) 验证 API Key 可用。

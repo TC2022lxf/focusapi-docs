@@ -1,48 +1,29 @@
 ---
-title: "OpenAI 兼容模型调用：GPT-4o 等 Chat Completions"
-description: "在 FocusAPI 使用 OpenAI 兼容接口调用 GPT-4o 等模型的完整指南：Chat Completions 与模型列表路径、Authorization Bearer 认证头、模型名规则，以及与原生 OpenAI 在 Base URL 与计费上的关键差异。"
+title: "OpenAI 兼容模型"
+description: "FocusAPI OpenAI 兼容模型说明：本页为旧入口，文本、图像、语音等能力已拆分到对应模型能力页面。"
 ---
 
-FocusAPI 对 **OpenAI Chat Completions / Responses** 等路径提供兼容转发。多数场景下，只需使用 OpenAI SDK 并修改 `base_url` 即可。
+本页是旧入口。FocusAPI 现在按 **模型能力** 组织文档，而不是按厂商组织。
 
-## 推荐接口
+如果你要使用 OpenAI SDK，通常只需要在对应能力页中使用：
 
-| 用途 | 方法 | 路径 |
-| --- | --- | --- |
-| 对话（最常用） | `POST` | `/v1/chat/completions` |
-| 模型列表 | `GET` | `/v1/models` |
-
-完整示例见 [快速开始](/quickstart) 与 [对话 API](/api/chat)。
-
-## 模型名
-
-请求体中的 `model` 必须与控制台 **模型广场** 中展示的 ID 一致，例如：
-
-- `gpt-4o`
-- `gpt-4o-mini`
-- 其他平台已上架的 OpenAI 系列模型
-
-<Warning>
-  模型名区分大小写。复制模型广场中的完整 ID，不要自行拼接版本后缀。
-</Warning>
-
-## 认证头
-
-```http
-Authorization: Bearer sk-your-api-key
-Content-Type: application/json
+```text
+https://api.focusapi.cn/v1
 ```
 
-## 与原生 OpenAI 的差异（须知）
+## 选择入口
 
-| 项目 | 说明 |
-| --- | --- |
-| Base URL | 使用 `https://api.FocusAPI.com/v1`，而非 `api.openai.com` |
-| 计费 | 按 FocusAPI 额度与模型倍率计费，见 [计费说明](/billing/pricing) |
-| 功能开关 | 部分新特性是否可用取决于平台上架情况，以控制台为准 |
-
-## 相关文档
-
-- [Claude 格式](/models/claude)
-- [Gemini 格式](/models/gemini)
-- [DeepSeek 格式](/models/deepseek)
+<CardGroup cols={2}>
+  <Card title="文本对话" href="/models/chat">
+    GPT、Claude、Gemini、DeepSeek 等聊天模型的统一调用方式。
+  </Card>
+  <Card title="图像生成" href="/models/image-generation">
+    OpenAI Images、Gemini 图像、Seedream 等图片模型。
+  </Card>
+  <Card title="语音模型" href="/models/audio">
+    语音转文字和文字转语音。
+  </Card>
+  <Card title="模型选择指南" href="/models/selection">
+    按任务选择模型能力。
+  </Card>
+</CardGroup>
