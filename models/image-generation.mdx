@@ -38,6 +38,8 @@ curl https://www.focusapi.cn/v1/images/generations \
 ```
 
 ```python OpenAI SDK
+import base64
+from urllib.request import urlopen
 from openai import OpenAI
 
 client = OpenAI(
@@ -51,12 +53,28 @@ image = client.images.generate(
     size="1024x1024",
     quality="medium",
     n=1,
+    response_format="b64_json",
 )
 
-print(image.data[0].url or image.data[0].b64_json)
+item = image.data[0]
+save_path = "focusapi-image.png"
+
+if item.b64_json:
+    # b64_json 是 base64 字符串，不是 bytes；写入前必须先 b64decode
+    with open(save_path, "wb") as f:
+        f.write(base64.b64decode(item.b64_json))
+elif item.url:
+    with open(save_path, "wb") as f:
+        f.write(urlopen(item.url).read())
+
+print(f"已保存: {save_path}")
 ```
 
 </CodeGroup>
+
+<Note>
+  OpenAI Python SDK 返回的 `b64_json` 是 **str**，不要对它调用 `.decode()`。保存图片应使用 `base64.b64decode(b64_json)` 得到二进制后再 `wb` 写入。若返回 `url`，直接下载 URL 内容即可。
+</Note>
 
 ### GPT 图像参数
 
@@ -264,6 +282,8 @@ curl https://www.focusapi.cn/v1/images/generations \
 ```
 
 ```python OpenAI SDK
+import base64
+from urllib.request import urlopen
 from openai import OpenAI
 
 client = OpenAI(
@@ -276,9 +296,20 @@ image = client.images.generate(
     prompt="一张适合电商详情页的产品主图",
     size="1024x1024",
     n=1,
+    response_format="b64_json",
 )
 
-print(image.data[0].url or image.data[0].b64_json)
+item = image.data[0]
+save_path = "focusapi-image.png"
+
+if item.b64_json:
+    with open(save_path, "wb") as f:
+        f.write(base64.b64decode(item.b64_json))
+elif item.url:
+    with open(save_path, "wb") as f:
+        f.write(urlopen(item.url).read())
+
+print(f"已保存: {save_path}")
 ```
 
 </CodeGroup>
@@ -340,6 +371,7 @@ print(image.data[0].url or image.data[0].b64_json)
 
 ## 常见问题
 
+- 保存的 PNG 为 0 KB 或报错 `'str' object has no attribute 'decode'`：`b64_json` 已是 base64 字符串，应使用 `base64.b64decode(item.b64_json)` 解码后再写入文件，不要对 `b64_json` 调用 `.decode()`，也不要把 base64 文本直接当二进制写入。
 - 返回图片 URL 无法访问：检查 URL 有效期，或使用 `b64_json` 返回格式。
 - 尺寸不支持：换成模型广场推荐尺寸。
 - 请求很久后失败：看 [524 超时](/errors/524)，重任务优先使用异步任务。
