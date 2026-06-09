@@ -26,6 +26,13 @@ POST /v1/chat/completions
 
 ## curl 调用
 
+图片可通过 **HTTPS URL** 或 **base64 data URL** 传入。本地图片可先转 base64：
+
+```bash
+# 将本地图片转为 base64（去掉换行后填入下方 JSON）
+base64 -w 0 /path/to/local.png
+```
+
 ```bash
 curl https://www.focusapi.cn/v1/chat/completions \
   -H "Authorization: Bearer sk-your-api-key" \
@@ -36,7 +43,13 @@ curl https://www.focusapi.cn/v1/chat/completions \
       {
         "role": "user",
         "content": [
-          { "type": "text", "text": "请描述这张图片的主要内容" },
+          { "type": "text", "text": "请对比这两张图片的主要内容" },
+          {
+            "type": "image_url",
+            "image_url": {
+              "url": "data:image/png;base64,<your-base64-data>"
+            }
+          },
           {
             "type": "image_url",
             "image_url": {
@@ -58,6 +71,7 @@ pip install openai anthropic google-genai litellm requests
 <CodeGroup>
 
 ```python OpenAI SDK
+import base64
 from openai import OpenAI
 
 client = OpenAI(
@@ -65,13 +79,23 @@ client = OpenAI(
     api_key="sk-your-api-key",
 )
 
+# 本地图片转 base64
+with open("/path/to/local.png", "rb") as f:
+    local_b64 = base64.b64encode(f.read()).decode("utf-8")
+
 response = client.chat.completions.create(
     model="gpt-4o-mini",
     messages=[
         {
             "role": "user",
             "content": [
-                {"type": "text", "text": "请描述这张图片的主要内容"},
+                {"type": "text", "text": "请对比这两张图片的主要内容"},
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:image/png;base64,{local_b64}",
+                    },
+                },
                 {
                     "type": "image_url",
                     "image_url": {
@@ -87,12 +111,17 @@ print(response.choices[0].message.content)
 ```
 
 ```python Claude SDK
+import base64
 from anthropic import Anthropic
 
 client = Anthropic(
     api_key="sk-your-api-key",
     base_url="https://www.focusapi.cn",
 )
+
+# 本地图片转 base64
+with open("/path/to/local.png", "rb") as f:
+    local_b64 = base64.b64encode(f.read()).decode("utf-8")
 
 message = client.messages.create(
     model="claude-sonnet-4-20250514",
@@ -101,7 +130,15 @@ message = client.messages.create(
         {
             "role": "user",
             "content": [
-                {"type": "text", "text": "请描述这张图片的主要内容"},
+                {"type": "text", "text": "请对比这两张图片的主要内容"},
+                {
+                    "type": "image",
+                    "source": {
+                        "type": "base64",
+                        "media_type": "image/png",
+                        "data": local_b64,
+                    },
+                },
                 {
                     "type": "image",
                     "source": {
@@ -127,16 +164,19 @@ client = genai.Client(
     http_options=types.HttpOptions(base_url="https://www.focusapi.cn"),
 )
 
-image_bytes = requests.get("https://example.com/image.png").content
+# 本地图片
+with open("/path/to/local.png", "rb") as f:
+    local_bytes = f.read()
+
+# 远程图片 URL
+remote_bytes = requests.get("https://example.com/image.png").content
 
 response = client.models.generate_content(
     model="gemini-2.0-flash",
     contents=[
-        "请描述这张图片的主要内容",
-        types.Part.from_bytes(
-            data=image_bytes,
-            mime_type="image/png",
-        ),
+        "请对比这两张图片的主要内容",
+        types.Part.from_bytes(data=local_bytes, mime_type="image/png"),
+        types.Part.from_bytes(data=remote_bytes, mime_type="image/png"),
     ],
 )
 
@@ -144,7 +184,12 @@ print(response.text)
 ```
 
 ```python LiteLLM
+import base64
 import litellm
+
+# 本地图片转 base64
+with open("/path/to/local.png", "rb") as f:
+    local_b64 = base64.b64encode(f.read()).decode("utf-8")
 
 response = litellm.completion(
     model="openai/gpt-4o-mini",
@@ -154,7 +199,13 @@ response = litellm.completion(
         {
             "role": "user",
             "content": [
-                {"type": "text", "text": "请描述这张图片的主要内容"},
+                {"type": "text", "text": "请对比这两张图片的主要内容"},
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:image/png;base64,{local_b64}",
+                    },
+                },
                 {
                     "type": "image_url",
                     "image_url": {
@@ -172,7 +223,7 @@ print(response.choices[0].message.content)
 </CodeGroup>
 
 <Note>
-  OpenAI SDK / LiteLLM 使用 OpenAI 兼容图文格式；Claude SDK 和 Gemini SDK 使用各自原生图片输入格式。若特殊格式报错，先用 curl 或 OpenAI SDK 验证模型是否支持视觉能力。
+  OpenAI SDK / LiteLLM 的 base64 使用 `data:image/png;base64,{base64}` 格式；Claude SDK 使用 `source.type: "base64"`；Gemini SDK 直接传字节。每个示例同时演示本地 base64 和远程 URL 两种传图方式。若特殊格式报错，先用 curl 或 OpenAI SDK 验证模型是否支持视觉能力。
 </Note>
 
 ## 图片输入建议
