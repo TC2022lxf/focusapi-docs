@@ -107,7 +107,18 @@ print(f"已保存: {save_path}")
 
 ## Gemini / Imagen 图像模型
 
-适合已经使用 Google GenAI SDK 的项目。Gemini 图像相关能力可能有两种形态：Imagen 文生图，或 Gemini 多模态生成图片。实际模型 ID 和参数以模型广场为准。
+适合已经使用 Google GenAI SDK 的项目。图像能力分 **两条接入路径**，不要混用：
+
+| 模型类型 | 典型模型 ID | 调用方式 |
+| --- | --- | --- |
+| **Imagen** | `imagen-4.0-generate-001`、`imagen-4.0-generate-preview-06-06` 等 | `generate_images` / `:predict` |
+| **Gemini 图片生成** | `gemini-3.1-flash-image-preview`、`gemini-2.5-flash-image`、`gemini-3-pro-image-preview` 等 | `generate_content` / Chat，并设置 `response_modalities` |
+
+<Warning>
+  `gemini-3.1-flash-image-preview` 等 Gemini 图片模型 **不能** 使用 `client.models.generate_images()`。那是 Imagen 专用接口，换模型名也不会生效。
+</Warning>
+
+### Imagen 文生图
 
 <CodeGroup>
 
@@ -129,7 +140,7 @@ curl https://www.focusapi.cn/v1beta/models/imagen-4.0-generate-preview-06-06:pre
   }'
 ```
 
-```python Gemini GenAI SDK
+```python Imagen GenAI SDK
 from google import genai
 from google.genai import types
 
@@ -153,6 +164,97 @@ for image in response.generated_images:
 ```
 
 </CodeGroup>
+
+### Gemini 图片生成模型
+
+以 `gemini-3.1-flash-image-preview` 为例，使用 `generate_content` 并开启图片输出：
+
+<CodeGroup>
+
+```bash cURL
+curl https://www.focusapi.cn/v1beta/models/gemini-3.1-flash-image-preview:generateContent \
+  -H "x-goog-api-key: sk-your-api-key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "contents": [
+      {
+        "role": "user",
+        "parts": [
+          { "text": "一张极简蓝色云朵图标，白色背景" }
+        ]
+      }
+    ],
+    "generationConfig": {
+      "responseModalities": ["TEXT", "IMAGE"],
+      "imageConfig": {
+        "aspectRatio": "1:1",
+        "imageSize": "1K"
+      }
+    }
+  }'
+```
+
+```python Gemini GenAI SDK
+import base64
+import os
+import re
+from datetime import datetime
+
+from google import genai
+from google.genai import types
+
+client = genai.Client(
+    api_key="sk-your-api-key",
+    http_options=types.HttpOptions(base_url="https://www.focusapi.cn"),
+)
+
+response = client.models.generate_content(
+    model="gemini-3.1-flash-image-preview",
+    contents="一张极简蓝色云朵图标，白色背景",
+    config=types.GenerateContentConfig(
+        response_modalities=["IMAGE"],
+        image_config=types.ImageConfig(
+            aspect_ratio="1:1",
+            image_size="1K",
+        ),
+    ),
+)
+
+os.makedirs("output", exist_ok=True)
+saved_files = []
+
+for i, part in enumerate(response.parts):
+    # 1. 优先保存图片（不要先 print text，否则只有 text part 时会错过保存）
+    image = part.as_image()
+    if image:
+        filename = f"output/generated_image_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{i}.png"
+        image.save(filename)
+        saved_files.append(filename)
+        print(f"图片已保存到 {filename}")
+        continue
+
+    # 2. 兼容：部分网关会把图片塞进 text 的 markdown data URL
+    if part.text:
+        match = re.search(r"data:image/[^;]+;base64,([A-Za-z0-9+/=]+)", part.text)
+        if match:
+            filename = f"output/generated_image_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{i}.png"
+            with open(filename, "wb") as f:
+                f.write(base64.b64decode(match.group(1)))
+            saved_files.append(filename)
+            print(f"图片已保存到 {filename}")
+            continue
+        if len(part.text) < 500:
+            print(part.text)
+
+if not saved_files:
+    raise RuntimeError("响应里没有图片，请确认 model、response_modalities 和 base_url 是否正确")
+```
+
+</CodeGroup>
+
+<Note>
+  安装依赖：`pip install google-genai pillow`。保存图片时 **先调用 `part.as_image()`**，不要先 `print(part.text)`。若打印内容是一长串 base64 或 `![image](data:image/...)`，说明图片在 `text` 里，需用正则提取后 `base64.b64decode` 保存。生图建议 `response_modalities=["IMAGE"]`，减少纯文本 part 干扰。
+</Note>
 
 ### Gemini / Imagen 参数
 
@@ -178,6 +280,9 @@ for image in response.generated_images:
   <Tab title="Gemini 图片生成">
     | 参数 | 说明 | 可选值 |
     | --- | --- | --- |
+    | `response_modalities` | GenAI SDK / 原生 curl 必须开启图片输出 | `["TEXT", "IMAGE"]` |
+    | `image_config.aspect_ratio` | GenAI SDK 画幅比例 | `1:1`、`3:2`、`2:3`、`9:16`、`16:9` |
+    | `image_config.image_size` | GenAI SDK 分辨率档位 | `1K`、`2K` |
     | `extra_body.google.image_config.aspect_ratio` | OpenAI 兼容 Chat Completions 生成图片时的比例参数 | `1:1`、`3:2`、`2:3`、`9:16`、`16:9` |
     | `extra_body.google.image_config.image_size` | OpenAI 兼容 Chat Completions 生成图片时的分辨率档位 | `1K`、`2K` |
   </Tab>
@@ -233,7 +338,7 @@ client = genai.Client(
 )
 
 chat = client.chats.create(
-    model="gemini-2.0-flash-preview-image-generation",
+    model="gemini-3.1-flash-image-preview",
     config=types.GenerateContentConfig(
         response_modalities=["TEXT", "IMAGE"],
         image_config=types.ImageConfig(
@@ -251,10 +356,12 @@ second = chat.send_message(
     "保持上一张图的主体和构图，把背景改成透明，并让云朵边缘更圆润。"
 )
 
-for part in second.candidates[0].content.parts:
-    if part.inline_data:
-        with open("cloud-icon.png", "wb") as f:
-            f.write(part.inline_data.data)
+for part in second.parts:
+    if image := part.as_image():
+        image.save("cloud-icon.png")
+        print("图片已保存到 cloud-icon.png")
+    elif part.text and len(part.text) < 500:
+        print(part.text)
 ```
 
 </CodeGroup>
@@ -371,6 +478,8 @@ print(f"已保存: {save_path}")
 
 ## 常见问题
 
+- Gemini 图片模型调用 `generate_images` 失败：`gemini-3.1-flash-image-preview` 等模型应使用 `generate_content` 或 Chat，并用 `part.as_image().save()` 保存；`generate_images` 仅适用于 `imagen-*` 模型。
+- 只打印出一长串编码、没有保存图片：先调用 `part.as_image()` 保存，不要先 `print(part.text)`；若图片在 text 的 `data:image/...;base64,...` 里，需正则提取后解码保存。
 - 保存的 PNG 为 0 KB 或报错 `'str' object has no attribute 'decode'`：`b64_json` 已是 base64 字符串，应使用 `base64.b64decode(item.b64_json)` 解码后再写入文件，不要对 `b64_json` 调用 `.decode()`，也不要把 base64 文本直接当二进制写入。
 - 返回图片 URL 无法访问：检查 URL 有效期，或使用 `b64_json` 返回格式。
 - 尺寸不支持：换成模型广场推荐尺寸。
