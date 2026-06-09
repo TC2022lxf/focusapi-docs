@@ -14,7 +14,7 @@ POST /v1/chat/completions
 Base URL：
 
 ```text
-https://api.focusapi.cn/v1
+https://www.focusapi.cn/v1
 ```
 
 鉴权、Base URL 和首次请求见 [快速开始](/quickstart)，本页只说明文本对话模型的选择与差异。
@@ -38,7 +38,7 @@ https://api.focusapi.cn/v1
 curl 适合快速验证 Key、Base URL 和模型名是否正确。
 
 ```bash
-curl https://api.focusapi.cn/v1/chat/completions \
+curl https://www.focusapi.cn/v1/chat/completions \
   -H "Authorization: Bearer sk-your-api-key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -53,9 +53,9 @@ curl https://api.focusapi.cn/v1/chat/completions \
 
 不同 SDK 的 Base URL 形态不完全一样：
 
-- OpenAI SDK / LiteLLM：使用 OpenAI 兼容地址 `https://api.focusapi.cn/v1`
-- Claude SDK：使用 Anthropic 原生地址 `https://api.focusapi.cn`
-- Gemini SDK：使用 Gemini 原生地址 `https://api.focusapi.cn`
+- OpenAI SDK / LiteLLM：使用 OpenAI 兼容地址 `https://www.focusapi.cn/v1`
+- Claude SDK：使用 Anthropic 原生地址 `https://www.focusapi.cn`
+- Gemini SDK：使用 Gemini 原生地址 `https://www.focusapi.cn`
 
 ```bash
 pip install openai anthropic google-genai litellm
@@ -67,7 +67,7 @@ pip install openai anthropic google-genai litellm
 from openai import OpenAI
 
 client = OpenAI(
-    base_url="https://api.focusapi.cn/v1",
+    base_url="https://www.focusapi.cn/v1",
     api_key="sk-your-api-key",
 )
 
@@ -84,7 +84,7 @@ from anthropic import Anthropic
 
 client = Anthropic(
     api_key="sk-your-api-key",
-    base_url="https://api.focusapi.cn",
+    base_url="https://www.focusapi.cn",
 )
 
 message = client.messages.create(
@@ -104,7 +104,7 @@ from google.genai import types
 
 client = genai.Client(
     api_key="sk-your-api-key",
-    http_options=types.HttpOptions(base_url="https://api.focusapi.cn"),
+    http_options=types.HttpOptions(base_url="https://www.focusapi.cn"),
 )
 
 response = client.models.generate_content(
@@ -121,7 +121,7 @@ import litellm
 response = litellm.completion(
     model="openai/gpt-4o-mini",
     api_key="sk-your-api-key",
-    api_base="https://api.focusapi.cn/v1",
+    api_base="https://www.focusapi.cn/v1",
     messages=[
         {"role": "user", "content": "Hello from FocusAPI"},
     ],

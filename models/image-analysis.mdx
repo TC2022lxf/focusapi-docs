@@ -27,7 +27,7 @@ POST /v1/chat/completions
 ## curl 调用
 
 ```bash
-curl https://api.focusapi.cn/v1/chat/completions \
+curl https://www.focusapi.cn/v1/chat/completions \
   -H "Authorization: Bearer sk-your-api-key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -61,7 +61,7 @@ pip install openai anthropic google-genai litellm requests
 from openai import OpenAI
 
 client = OpenAI(
-    base_url="https://api.focusapi.cn/v1",
+    base_url="https://www.focusapi.cn/v1",
     api_key="sk-your-api-key",
 )
 
@@ -91,7 +91,7 @@ from anthropic import Anthropic
 
 client = Anthropic(
     api_key="sk-your-api-key",
-    base_url="https://api.focusapi.cn",
+    base_url="https://www.focusapi.cn",
 )
 
 message = client.messages.create(
@@ -124,7 +124,7 @@ from google.genai import types
 
 client = genai.Client(
     api_key="sk-your-api-key",
-    http_options=types.HttpOptions(base_url="https://api.focusapi.cn"),
+    http_options=types.HttpOptions(base_url="https://www.focusapi.cn"),
 )
 
 image_bytes = requests.get("https://example.com/image.png").content
@@ -149,7 +149,7 @@ import litellm
 response = litellm.completion(
     model="openai/gpt-4o-mini",
     api_key="sk-your-api-key",
-    api_base="https://api.focusapi.cn/v1",
+    api_base="https://www.focusapi.cn/v1",
     messages=[
         {
             "role": "user",

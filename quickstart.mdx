@@ -1,6 +1,6 @@
 ---
 title: "快速开始：5 分钟完成首次调用"
-description: "FocusAPI 快速开始：获取 API Key，配置 https://api.focusapi.cn/v1，用 curl 或 Python OpenAI SDK 完成首次文本对话调用。"
+description: "FocusAPI 快速开始：获取 API Key，配置 https://www.focusapi.cn/v1，用 curl 或 Python OpenAI SDK 完成首次文本对话调用。"
 ---
 
 本页只做一件事：让你快速跑通一次文本对话请求。后续图像、视频、语音等能力请从 [模型选择指南](/models/selection) 进入。
@@ -15,7 +15,7 @@ description: "FocusAPI 快速开始：获取 API Key，配置 https://api.focusa
 FocusAPI 兼容 OpenAI API v1 路径，默认 Base URL 为：
 
 ```text
-https://api.focusapi.cn/v1
+https://www.focusapi.cn/v1
 ```
 
 若控制台或公告提供了区域/专线地址，以控制台显示为准。
@@ -25,7 +25,7 @@ https://api.focusapi.cn/v1
 将 `sk-your-api-key` 替换为你的真实 Key：
 
 ```bash
-curl https://api.focusapi.cn/v1/chat/completions \
+curl https://www.focusapi.cn/v1/chat/completions \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer sk-your-api-key" \
   -d '{
@@ -57,7 +57,7 @@ curl https://api.focusapi.cn/v1/chat/completions \
 from openai import OpenAI
 
 client = OpenAI(
-    base_url="https://api.focusapi.cn/v1",
+    base_url="https://www.focusapi.cn/v1",
     api_key="sk-your-api-key",
 )
 

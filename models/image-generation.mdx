@@ -25,7 +25,7 @@ description: "FocusAPI 图像生成接入指南：按 GPT 图像、Gemini/Imagen
 <CodeGroup>
 
 ```bash cURL
-curl https://api.focusapi.cn/v1/images/generations \
+curl https://www.focusapi.cn/v1/images/generations \
   -H "Authorization: Bearer sk-your-api-key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -41,7 +41,7 @@ curl https://api.focusapi.cn/v1/images/generations \
 from openai import OpenAI
 
 client = OpenAI(
-    base_url="https://api.focusapi.cn/v1",
+    base_url="https://www.focusapi.cn/v1",
     api_key="sk-your-api-key",
 )
 
@@ -94,7 +94,7 @@ print(image.data[0].url or image.data[0].b64_json)
 <CodeGroup>
 
 ```bash cURL
-curl https://api.focusapi.cn/v1beta/models/imagen-4.0-generate-preview-06-06:predict \
+curl https://www.focusapi.cn/v1beta/models/imagen-4.0-generate-preview-06-06:predict \
   -H "x-goog-api-key: sk-your-api-key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -117,7 +117,7 @@ from google.genai import types
 
 client = genai.Client(
     api_key="sk-your-api-key",
-    http_options=types.HttpOptions(base_url="https://api.focusapi.cn"),
+    http_options=types.HttpOptions(base_url="https://www.focusapi.cn"),
 )
 
 response = client.models.generate_images(
@@ -183,7 +183,7 @@ for image in response.generated_images:
 from openai import OpenAI
 
 client = OpenAI(
-    base_url="https://api.focusapi.cn/v1",
+    base_url="https://www.focusapi.cn/v1",
     api_key="sk-your-api-key",
 )
 
@@ -211,7 +211,7 @@ from google.genai import types
 
 client = genai.Client(
     api_key="sk-your-api-key",
-    http_options=types.HttpOptions(base_url="https://api.focusapi.cn"),
+    http_options=types.HttpOptions(base_url="https://www.focusapi.cn"),
 )
 
 chat = client.chats.create(
@@ -252,7 +252,7 @@ for part in second.candidates[0].content.parts:
 <CodeGroup>
 
 ```bash cURL
-curl https://api.focusapi.cn/v1/images/generations \
+curl https://www.focusapi.cn/v1/images/generations \
   -H "Authorization: Bearer sk-your-api-key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -267,7 +267,7 @@ curl https://api.focusapi.cn/v1/images/generations \
 from openai import OpenAI
 
 client = OpenAI(
-    base_url="https://api.focusapi.cn/v1",
+    base_url="https://www.focusapi.cn/v1",
     api_key="sk-your-api-key",
 )
 
