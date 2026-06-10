@@ -297,12 +297,22 @@ if not saved_files:
 
 ### 多轮图像创作
 
-一次性的 Images API 通常是 **无状态** 的：每次请求只看当前 `prompt` 和当前参数。  
-如果模型支持在对话中输出图片，GPT 和 Gemini 类模型通常可以通过官方的多轮接口继续调整。
+OpenAI 有两条生图路径，不要混用：
+
+| 场景 | 官方接口 | 特点 |
+| --- | --- | --- |
+| 单张生成/单次编辑 | `client.images.generate` / `client.images.edit` | `model` 填 **`gpt-image-1`** 等图像模型 |
+| 多轮对话式改图 | `client.responses.create` + **`tools=[{"type": "image_generation"}]`** | `model` 填 **`gpt-4.1-mini`** 等支持该工具的主模型；实际画图由内置 `gpt-image-*` 完成 |
+
+<Note>
+  **为什么多轮要用 `tools`？** 这是 OpenAI Responses API 的官方设计：图片生成是 **hosted built-in tool**（平台托管的内置工具），不是你自己实现的 function。`gpt-4.1-mini` 负责理解意图并决定是否调用；真正画图在 tool 内完成。内置 tool 可在 `tools` 数组里指定底层图像模型（如 `model: "gpt-image-1"`），但不能换成任意非 OpenAI 图像模型——若模型广场没有对应 `gpt-image-*`，应改用 `client.images.generate(model="你上架的模型")` 或自定义 function 由你的服务转发。每一轮都要重新传 `tools`（不会自动继承）。
+</Note>
 
 <CodeGroup>
 
 ```python OpenAI Responses
+import base64
+import os
 from openai import OpenAI
 
 client = OpenAI(
@@ -310,22 +320,41 @@ client = OpenAI(
     api_key="sk-your-api-key",
 )
 
+def save_image_from_response(response, save_path):
+    for item in response.output:
+        if item.type == "image_generation_call" and item.result:
+            os.makedirs(os.path.dirname(save_path) or ".", exist_ok=True)
+            with open(save_path, "wb") as f:
+                f.write(base64.b64decode(item.result))
+            print(f"图片已保存到 {save_path}")
+            return True
+    return False
+
 first = client.responses.create(
     model="gpt-4.1-mini",
     input="生成一张极简蓝色云朵图标，白色背景，适合作为 App 图标。",
-    tools=[{"type": "image_generation"}],
+    tools=[{
+        "type": "image_generation",
+        "model": "gpt-image-1",       # 指定内置 tool 使用的图像模型（以模型广场为准）
+        "size": "1024x1024",
+        "quality": "medium",
+    }],
 )
+
+save_image_from_response(first, "output/cloud-v1.png")
 
 second = client.responses.create(
     model="gpt-4.1-mini",
     previous_response_id=first.id,
     input="保持上一张图的主体和构图，把背景改成透明，并让云朵边缘更圆润。",
-    tools=[{"type": "image_generation"}],
+    tools=[{
+        "type": "image_generation",
+        "model": "gpt-image-1",
+        "action": "edit",             # auto / generate / edit
+    }],
 )
 
-for item in second.output:
-    if item.type == "image_generation_call":
-        print(item.result)  # base64 image data
+save_image_from_response(second, "output/cloud-v2.png")
 ```
 
 ```python Gemini GenAI Chat
@@ -367,7 +396,7 @@ for part in second.parts:
 </CodeGroup>
 
 <Note>
-  OpenAI 多轮示例使用 Responses API 的 `previous_response_id`；Gemini 多轮示例使用 GenAI Chat 会话。普通 `/v1/images/generations` 请求不要假设会自动记住上一轮图片。
+  OpenAI 多轮改图需模型支持 **Responses API** 和 **`image_generation` 内置工具**（以模型广场为准）。`previous_response_id` 用于串联上下文；若只想强制改图，可在 tool 里加 `"action": "edit"`，强制新图用 `"action": "generate"`。Gemini 多轮示例使用 GenAI Chat 会话。普通 `/v1/images/generations` 不会自动记住上一轮图片。
 </Note>
 
 ## Qwen / 豆包 / 其他热门图像模型
